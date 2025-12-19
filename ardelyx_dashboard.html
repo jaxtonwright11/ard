@@ -625,17 +625,20 @@
             });
         }
         
-        // Initialize
-        generateActivity();
-        updateMetrics();
-        updateTimestamp();
-        
-        // Refresh every 5 seconds
-        setInterval(() => {
-            generateActivity();
-            updateMetrics();
-            updateTimestamp();
-        }, 5000);
-    </script>
-</body>
-</html>
+        <script>
+  function safe(fn, name) {
+    try { fn(); }
+    catch (e) { console.error(`[${name}] failed`, e); }
+  }
+
+  // Initialize - timestamp first so it always shows
+  safe(updateTimestamp, "updateTimestamp");
+  safe(generateActivity, "generateActivity");
+  safe(updateMetrics, "updateMetrics");
+
+  setInterval(() => {
+    safe(updateTimestamp, "updateTimestamp");
+    safe(generateActivity, "generateActivity");
+    safe(updateMetrics, "updateMetrics");
+  }, 5000);
+</script>
