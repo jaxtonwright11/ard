@@ -631,14 +631,17 @@
     catch (e) { console.error(`[${name}] failed`, e); }
   }
 
-  // Initialize - timestamp first so it always shows
-  safe(updateTimestamp, "updateTimestamp");
-  safe(generateActivity, "generateActivity");
-  safe(updateMetrics, "updateMetrics");
+ function safe(fn) {
+  try { fn(); } catch (e) { console.log(e); }
+}
 
-  setInterval(() => {
-    safe(updateTimestamp, "updateTimestamp");
-    safe(generateActivity, "generateActivity");
-    safe(updateMetrics, "updateMetrics");
-  }, 5000);
-</script>
+function tick() {
+  safe(updateTimestamp);
+  safe(generateActivity);
+  safe(updateMetrics);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  tick();
+  setInterval(tick, 5000);
+});
